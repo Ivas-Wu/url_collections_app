@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://ivaswu:JA92iwtXA7kqBQZg@url-shortener-db.6m0o7.mongodb.net/?retryWrites=true&w=majority&appName=url-shortener-db";
+require('dotenv').config({ path: './.env' });
+const uri = process.env.MONGO_URI;
 
 const connectDB = async () => {
   try {

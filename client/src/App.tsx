@@ -8,7 +8,6 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="App">
-        <h1>URL Shortener</h1>
         <Routes>
           <Route path="/" element={<HomePage />} /> {/* Home page */}
           <Route path="/collections" element={<HomePage />} /> {/* TODO */}

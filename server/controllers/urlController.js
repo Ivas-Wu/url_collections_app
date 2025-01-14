@@ -42,11 +42,16 @@ const createCollection = async (req, res) => {
 };
 
 const addToCollection = async (req, res) => {
-  const { collectionUrl, shortUrl, originalUrl, altName } = req.body;
+  var { collectionUrl, shortUrl, originalUrl, altName } = req.body.data;
 
   try {
+      const collection = await Collection.findOne({ collectionUrl });
+      if (!collection) {
+          return res.status(404).json({ message: "Collection not found" });
+      }
+      var url = null;
       if (!shortUrl && originalUrl) {
-        const url = await Url.findOne({ shortUrl });
+        url = await Url.findOne({ shortUrl });
         if (!url) {
           const urlToSave = new Url({
             originalUrl,
@@ -55,27 +60,17 @@ const addToCollection = async (req, res) => {
           });
       
           await urlToSave.save();
-          shortUrl = urlToSave.shortUrl;
+          url = urlToSave;
         }
-        else {
-          shortUrl = url.shortUrl;
-        }
+        shortUrl = url.shortUrl;
       }
-      const collection = await Collection.findOne({ collectionUrl });
-      
-
-      if (!collection) {
-          return res.status(404).json({ message: "Collection not found" });
-      }
-
       if (collection.shortUrlList.includes(shortUrl)) {
         return res.status(204).end(); 
       }
-
       collection.shortUrlList.push(shortUrl);
       await collection.save();
 
-      res.status(200).json({ message: "URL added to collection", collection });
+      res.status(200).json(url);
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });
@@ -83,15 +78,13 @@ const addToCollection = async (req, res) => {
 };
 
 const deleteFromCollection = async (req, res) => {
-  const { collectionUrl, shortUrl } = req.body;
+  const { collectionUrl, shortUrl } = req.body.data;
 
   try {
       const collection = await Collection.findOne({ collectionUrl });
-
       if (!collection) {
           return res.status(404).json({ message: "Collection not found" });
       }
-
       if (!collection.shortUrlList.includes(shortUrl)) {
           return res.status(204).end(); 
       }
@@ -101,8 +94,7 @@ const deleteFromCollection = async (req, res) => {
       );
 
       await collection.save();
-
-      res.status(200).json({ message: "URL removed from collection", collection });
+      res.status(200).json(collection);
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });

@@ -1,108 +1,129 @@
 import React, { useEffect, useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Menu,
+  MenuItem,
+  Pagination,
+  Typography,
+} from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import type { CollectionItem, Collection } from '../../models/collections.models';
-import { getCollection } from '../../services/collectionService';
-import './collectionDetailListing.css';
-import { useParams } from 'react-router-dom';
+import { removeUrlFromCollection } from '../../services/collectionService';
 
-const CollectionDetailListing: React.FC = () => {
-  const { collectionId } = useParams();
+interface CollectionDetailsProps {
+  collectionId: string;
+  collectionData: Collection | undefined;
+  onUrlChanged: () => void;
+}
+
+const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
+  collectionId,
+  collectionData,
+  onUrlChanged,
+}) => {
   const [collections, setCollections] = useState<CollectionItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof CollectionItem; direction: 'asc' | 'desc' } | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCollections = async () => {
-      try {
-        const response: Collection = await getCollection(collectionId);
-        setCollections(response.urls);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCollections();
-  }, []);
-
-  const sortedCollections = [...collections].sort((a, b) => {
-    if (sortConfig) {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === 'asc' ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === 'asc' ? 1 : -1;
-      }
+    if (collectionData) {
+      setCollections(collectionData.urls);
     }
-    return 0;
-  });
+  }, [collectionData]);
 
-  const currentCollections = sortedCollections.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const requestSort = (key: keyof CollectionItem) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    rowId: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRowId(rowId);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedRowId(null);
+  };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleDelete = async (rowId: string) => {
+    await removeUrlFromCollection(collectionId, rowId);
+    onUrlChanged();
+    handleMenuClose();
+  };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
-    <div>
-      <h2>Collection Details</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>
-              <button onClick={() => requestSort('altName')}>ID</button>
-            </th>
-            <th>
-              <button onClick={() => requestSort('createdAt')}>Name</button>
-            </th>
-            <th>
-              <button onClick={() => requestSort('shortUrl')}>Short URL</button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentCollections.map((collection) => (
-            <tr key={collection.altName}>
-              <td>{collection.altName}</td>
-              <td>{collection.createdAt}</td>
-              <td><a href={`/${collection.shortUrl}`} target="_blank" rel="noopener noreferrer">
-                {collection.shortUrl}
-              </a></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div>
-        <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-          Previous
-        </button>
-        <span>Page {currentPage}</span>
-        <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage * itemsPerPage >= collections.length}
-        >
-          Next
-        </button>
-      </div>
-    </div>
+    <Paper sx={{ padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Collection Details
+      </Typography>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>URL</TableCell>
+              <TableCell>Short URL</TableCell>
+              <TableCell>Created At</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {collections
+              .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+              .map((collection) => (
+                <TableRow key={collection.altName}>
+                  <TableCell>{collection.altName}</TableCell>
+                  <TableCell>{collection.originalUrl}</TableCell>
+                  <TableCell>
+                    <a
+                      href={`/${collection.shortUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {collection.shortUrl}
+                    </a>
+                  </TableCell>
+                  <TableCell>{collection.createdAt}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="actions"
+                      onClick={(e) => handleMenuClick(e, collection.shortUrl)}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={() => handleDelete(selectedRowId!)}>Remove from collection</MenuItem>
+        {/* Add more menu items here if needed */}
+      </Menu>
+      <Pagination
+        count={Math.ceil(collections.length / itemsPerPage)}
+        page={currentPage}
+        onChange={handlePageChange}
+        sx={{ marginTop: 2, display: 'flex', justifyContent: 'center' }}
+      />
+    </Paper>
   );
 };
 

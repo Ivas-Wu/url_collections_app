@@ -1,39 +1,62 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { shortenUrl } from '../../services/urlService';
 import { PageConstants } from '../../constant/constants';
+import { Url } from '../../models/url.models'
+import { addCollection } from '../../services/collectionService';
+import {
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Snackbar,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 
 interface UrlShortenerFormProps {
   parentComponent: string;
+  parentUrl?: string;
+  onUrlAdded?: () => void;
 }
 
 const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
-    parentComponent,
-  }) => {
+  parentComponent,
+  parentUrl,
+  onUrlAdded,
+}) => {
   const [originalUrl, setOriginalUrl] = useState<string>('');
   const [shortUrl, setShortUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [submitButtonText, setSubmitButtonText] = useState<string>('');
   const [showLink, setShowLink] = useState<boolean>(false);
+  const [addToCollection, setAddToCollection] = useState<boolean>(false);
 
   useEffect(() => {
-    if (parentComponent == PageConstants.HOME) {
+    if (parentComponent === PageConstants.HOME) {
       setSubmitButtonText('Shorten URL');
       setShowLink(true);
     }
-    if (parentComponent == PageConstants.COLLECTION) {
+    if (parentComponent === PageConstants.COLLECTION) {
       setSubmitButtonText('Add to collection');
+      setAddToCollection(true);
     }
   }, []);
-  
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const response = await shortenUrl(originalUrl);
-      setShortUrl(response.shortUrl);
+      var response: Url | null = null;
+      if (addToCollection && onUrlAdded) {
+        response = await addCollection(parentUrl || "", null, originalUrl, null);
+        onUrlAdded();
+      } else {
+        response = await shortenUrl(originalUrl);
+      }
+      setShortUrl(response!.shortUrl);
     } catch (err) {
       setError('Error creating short URL. Please try again.');
     } finally {
@@ -42,32 +65,54 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
   };
 
   return (
-    <div>
+    <Paper sx={{ padding: 3, maxWidth: 500, margin: 'auto', marginTop: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        {parentComponent === PageConstants.HOME ? 'Shorten URL' : 'Add to collection'}
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="urlInput">Enter your URL:</label>
-        <input
-          type="text"
-          id="urlInput"
+        <TextField
+          fullWidth
+          label="Enter your URL"
           value={originalUrl}
           onChange={(e) => setOriginalUrl(e.target.value)}
           placeholder="http://example.com"
+          disabled={loading}
+          sx={{ marginBottom: 2 }}
         />
-        <button type="submit" disabled={loading}>
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={loading}
+          startIcon={loading ? <CircularProgress size={20} /> : null}
+        >
           {loading ? 'Shortening...' : submitButtonText}
-        </button>
+        </Button>
       </form>
 
-      {error && <p>{error}</p>}
+      {error && (
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError('')}
+        >
+          <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
+
       {showLink && shortUrl && (
         <div>
-          <p>Your short URL:</p>
+          <Typography variant="h6" gutterBottom>
+            Your short URL:
+          </Typography>
           <a href={`/${shortUrl}`} target="_blank" rel="noopener noreferrer">
             {shortUrl}
           </a>
         </div>
       )}
-    </div>
+    </Paper>
   );
 };
-export default UrlShortenerForm;
 
+export default UrlShortenerForm;
