@@ -1,6 +1,10 @@
 {
     "scripts": {
       "heroku-postbuild": "cd server && npm install && npm run build"
+    },
+    "engines": {
+          "node": "16.20.2",
+          "npm": "11.0.0"
     }
 }
   
