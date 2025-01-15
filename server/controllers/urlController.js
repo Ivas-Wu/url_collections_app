@@ -1,25 +1,15 @@
 const Url = require('../models/Url');
 const Collection = require('../models/Collection');
-const crypto = require('crypto'); 
-
-// Helper function to generate a random short URL
-const generateShortUrl = () => {
-  return crypto.randomBytes(6).toString('hex'); // Generates a 12-character random string
-};
+const { attemptToAddUrl, attemptToAddCollection } = require('../utils/urlHelper');
 
 const createShortUrl = async (req, res) => {
   const { originalUrl, shortUrl, altName } = req.body;
 
   try {
-    // If no shortUrl is provided, generate one
-    const urlToSave = new Url({
-      originalUrl,
-      shortUrl: shortUrl || generateShortUrl(),
-      altName
-    });
-
-    await urlToSave.save();
-    res.status(201).json({ message: 'URL shortened!', newUrl: urlToSave });
+    let urlToSave = await attemptToAddUrl(originalUrl, shortUrl, altName);
+    if (urlToSave) {
+      res.status(201).json({ message: 'URL shortened!', newUrl: urlToSave });
+    }
   } catch (err) {
     res.status(500).json({ message: 'Error creating URL', error: err });
   }
@@ -29,13 +19,10 @@ const createCollection = async (req, res) => {
   const { collectionName } = req.body;
 
   try {
-    const newCollection = new Collection({
-      collectionUrl: generateShortUrl(),
-      collectionName
-    });
-
-    await newCollection.save();
-    res.status(201).json({ message: 'New Collection created!', collectionUrl: newCollection });
+    const newCollection = attemptToAddCollection(collectionName);
+    if (newCollection) {
+      res.status(201).json({ message: 'New Collection created!', collectionUrl: newCollection });
+    }
   } catch (err) {
     res.status(500).json({ message: 'Error creating colletion', error: err });
   }
@@ -53,14 +40,7 @@ const addToCollection = async (req, res) => {
       if (!shortUrl && originalUrl) {
         url = await Url.findOne({ shortUrl });
         if (!url) {
-          const urlToSave = new Url({
-            originalUrl,
-            shortUrl: generateShortUrl(),
-            altName
-          });
-      
-          await urlToSave.save();
-          url = urlToSave;
+          url = await attemptToAddUrl(originalUrl, shortUrl, altName);
         }
         shortUrl = url.shortUrl;
       }

@@ -4,24 +4,22 @@ import { redirectPage } from '../services/urlService';
 
 const RedirectPage: React.FC = () => {
     const { shortUrl } = useParams();
+
     useEffect(() => {
         const redirect = async () => {
             try {
                 const originalUrl: string = await redirectPage(shortUrl);
                 window.location.href = originalUrl;
             } catch (err) {
-                throw err;
+                console.error('Error redirecting:', err);
+                window.location.href = '/404'; 
             }
         };
 
-        redirect()
-    }, []);
+        redirect();
+    }, [shortUrl]);
 
-    return (
-    <div>
-        <h1>Redirect Page: {shortUrl}</h1>
-    </div>
-    );
+    return null;
 };
 
 export default RedirectPage;

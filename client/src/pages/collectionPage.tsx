@@ -5,6 +5,8 @@ import { PageConstants } from '../constant/constants';
 import { useParams } from 'react-router-dom';
 import { Collection } from '../models/collections.models';
 import { getCollection } from '../services/collectionService';
+import { Box, Typography } from '@mui/material';
+import { textboxStyles } from '../styles/textboxStyles';
 
 const CollectionsPage: React.FC = () => {
   const { collectionId } = useParams();
@@ -19,7 +21,8 @@ const CollectionsPage: React.FC = () => {
           const response: Collection = await getCollection(collectionId);
           setCollections(response);
         } catch (err) {
-          setError(err instanceof Error ? err.message : 'An error occurred');
+          //setError(err instanceof Error ? err.message : 'An error occurred');
+          setError("No collection found.")
         } finally {
           setLoading(false);
         }
@@ -28,22 +31,33 @@ const CollectionsPage: React.FC = () => {
       fetchCollections();
     }, [refreshTable]);
   
-  return (
-    <div>
-      <UrlShortenerForm
-        parentComponent={PageConstants.COLLECTION}
-        parentUrl={collectionId}
-        onUrlAdded={() => setRefreshTable(!refreshTable)}
-      />
-      {!loading && 
-      <CollectionDetailListing 
-        collectionId={collectionId||""}
-        collectionData={collections}
-        onUrlChanged={() => setRefreshTable(!refreshTable)}
-      />}
-    </div>
-  );
-};
-
-export default CollectionsPage;
+    if (error) {
+      return (
+        <Box sx={textboxStyles.errorbox}>
+          <Typography variant="h5" color="error">
+            {error}
+          </Typography>
+        </Box>
+      );
+    }
+  
+    return (
+      <div>
+        <UrlShortenerForm
+          parentComponent={PageConstants.COLLECTION}
+          parentUrl={collectionId}
+          onUrlAdded={() => setRefreshTable(!refreshTable)}
+        />
+        {!loading && collections && (
+          <CollectionDetailListing
+            collectionId={collectionId || ""}
+            collectionData={collections}
+            onUrlChanged={() => setRefreshTable(!refreshTable)}
+          />
+        )}
+      </div>
+    );
+  };
+  
+  export default CollectionsPage;
 

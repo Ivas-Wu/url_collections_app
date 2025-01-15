@@ -10,6 +10,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
+import { textboxStyles } from '../../styles/textboxStyles';
 
 const CreateCollection: React.FC = () => {
   const [collectionName, setCollectionName] = useState<string>('');
@@ -51,9 +52,9 @@ const CreateCollection: React.FC = () => {
   };
 
   return (
-    <Paper sx={{ padding: 3, maxWidth: 500, margin: 'auto', marginTop: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Create a New Collection
+    <Paper sx={textboxStyles.paper}>
+      <Typography sx={textboxStyles.title}>
+      Create a New Collection
       </Typography>
       <TextField
         fullWidth
@@ -62,9 +63,10 @@ const CreateCollection: React.FC = () => {
         onChange={(e) => setCollectionName(e.target.value)}
         placeholder="Enter collection name"
         disabled={loading}
-        sx={{ marginBottom: 2 }}
+        sx={textboxStyles.textField}
       />
       <Button
+        sx={textboxStyles.button}
         variant="contained"
         onClick={handleCreateCollection}
         disabled={loading}

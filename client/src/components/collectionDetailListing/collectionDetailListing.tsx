@@ -16,6 +16,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import type { CollectionItem, Collection } from '../../models/collections.models';
 import { removeUrlFromCollection } from '../../services/collectionService';
+import collectionDetailListingStyles from './collactionDetailListingStyles';
 
 interface CollectionDetailsProps {
   collectionId: string;
@@ -64,19 +65,19 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   };
 
   return (
-    <Paper sx={{ padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
+    <Paper sx={collectionDetailListingStyles.paper}>
+      <Typography sx={collectionDetailListingStyles.typography} variant="h4" gutterBottom>
         Collection Details
       </Typography>
-      <TableContainer>
+      <TableContainer sx={collectionDetailListingStyles.tableContainer}>
         <Table>
-          <TableHead>
+          <TableHead sx={collectionDetailListingStyles.tableHead}>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>URL</TableCell>
-              <TableCell>Short URL</TableCell>
-              <TableCell>Created At</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={collectionDetailListingStyles.tableCell}>Name</TableCell>
+              <TableCell sx={collectionDetailListingStyles.tableCell}>URL</TableCell>
+              <TableCell sx={collectionDetailListingStyles.tableCell}>Short URL</TableCell>
+              <TableCell sx={collectionDetailListingStyles.tableCell}>Created At</TableCell>
+              <TableCell sx={collectionDetailListingStyles.tableCell}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -121,7 +122,7 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
         count={Math.ceil(collections.length / itemsPerPage)}
         page={currentPage}
         onChange={handlePageChange}
-        sx={{ marginTop: 2, display: 'flex', justifyContent: 'center' }}
+        sx={collectionDetailListingStyles.pagination}
       />
     </Paper>
   );

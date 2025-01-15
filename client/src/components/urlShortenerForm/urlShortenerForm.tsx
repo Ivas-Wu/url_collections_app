@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { shortenUrl } from '../../services/urlService';
 import { PageConstants } from '../../constant/constants';
-import { Url } from '../../models/url.models'
+import { Url } from '../../models/url.models';
 import { addCollection } from '../../services/collectionService';
 import {
   TextField,
@@ -11,7 +11,9 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  Box,
 } from '@mui/material';
+import { textboxStyles } from '../../styles/textboxStyles';
 
 interface UrlShortenerFormProps {
   parentComponent: string;
@@ -26,6 +28,7 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
 }) => {
   const [originalUrl, setOriginalUrl] = useState<string>('');
   const [shortUrl, setShortUrl] = useState<string>('');
+  const [altName, setAltName] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [submitButtonText, setSubmitButtonText] = useState<string>('');
@@ -49,12 +52,12 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
     setError('');
 
     try {
-      var response: Url | null = null;
+      let response: Url | null = null;
       if (addToCollection && onUrlAdded) {
-        response = await addCollection(parentUrl || "", null, originalUrl, null);
+        response = await addCollection(parentUrl || '', null, originalUrl, altName);
         onUrlAdded();
       } else {
-        response = await shortenUrl(originalUrl);
+        response = await shortenUrl(originalUrl, altName);
       }
       setShortUrl(response!.shortUrl);
     } catch (err) {
@@ -65,8 +68,8 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
   };
 
   return (
-    <Paper sx={{ padding: 3, maxWidth: 500, margin: 'auto', marginTop: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <Paper sx={textboxStyles.paper}>
+      <Typography sx={textboxStyles.title}>
         {parentComponent === PageConstants.HOME ? 'Shorten URL' : 'Add to collection'}
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -77,9 +80,19 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
           onChange={(e) => setOriginalUrl(e.target.value)}
           placeholder="http://example.com"
           disabled={loading}
-          sx={{ marginBottom: 2 }}
+          sx={textboxStyles.textField}
+        />
+        <TextField
+          fullWidth
+          label="Enter a name"
+          value={altName}
+          onChange={(e) => setAltName(e.target.value)}
+          placeholder="Site 1"
+          disabled={loading}
+          sx={textboxStyles.textField}
         />
         <Button
+          sx={textboxStyles.button}
           variant="contained"
           type="submit"
           disabled={loading}
@@ -102,14 +115,19 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
       )}
 
       {showLink && shortUrl && (
-        <div>
+        <Box sx={textboxStyles.link}>
           <Typography variant="h6" gutterBottom>
             Your short URL:
           </Typography>
-          <a href={`/${shortUrl}`} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`/${shortUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={textboxStyles.link.a}
+          >
             {shortUrl}
           </a>
-        </div>
+        </Box>
       )}
     </Paper>
   );
