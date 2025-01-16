@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -14,9 +14,10 @@ import {
   Typography,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import type { CollectionItem, Collection } from '../../models/collections.models';
+import type { Collection } from '../../models/collections.models';
 import { removeUrlFromCollection } from '../../services/collectionService';
 import collectionDetailListingStyles from './collactionDetailListingStyles';
+import { Url } from '../../models/url.models';
 
 interface CollectionDetailsProps {
   collectionId: string;
@@ -29,7 +30,7 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   collectionData,
   onUrlChanged,
 }) => {
-  const [collections, setCollections] = useState<CollectionItem[]>([]);
+  const [collections, setCollections] = useState<Url[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

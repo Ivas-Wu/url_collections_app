@@ -1,6 +1,5 @@
 const Url = require('../models/Url');
-const Collection = require('../models/Collection');
-const { attemptToAddUrl, attemptToAddCollection } = require('../utils/urlHelper');
+const { attemptToAddUrl } = require('../utils/urlHelper');
 
 const createShortUrl = async (req, res) => {
   const { originalUrl, shortUrl, altName } = req.body;
@@ -12,72 +11,6 @@ const createShortUrl = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ message: 'Error creating URL', error: err });
-  }
-};
-
-const createCollection = async (req, res) => {
-  const { collectionName } = req.body;
-
-  try {
-    const newCollection = attemptToAddCollection(collectionName);
-    if (newCollection) {
-      res.status(201).json({ message: 'New Collection created!', collectionUrl: newCollection });
-    }
-  } catch (err) {
-    res.status(500).json({ message: 'Error creating colletion', error: err });
-  }
-};
-
-const addToCollection = async (req, res) => {
-  var { collectionUrl, shortUrl, originalUrl, altName } = req.body.data;
-
-  try {
-      const collection = await Collection.findOne({ collectionUrl });
-      if (!collection) {
-          return res.status(404).json({ message: "Collection not found" });
-      }
-      var url = null;
-      if (!shortUrl && originalUrl) {
-        url = await Url.findOne({ shortUrl });
-        if (!url) {
-          url = await attemptToAddUrl(originalUrl, shortUrl, altName);
-        }
-        shortUrl = url.shortUrl;
-      }
-      if (collection.shortUrlList.includes(shortUrl)) {
-        return res.status(204).end(); 
-      }
-      collection.shortUrlList.push(shortUrl);
-      await collection.save();
-
-      res.status(200).json(url);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
-  }
-};
-
-const deleteFromCollection = async (req, res) => {
-  const { collectionUrl, shortUrl } = req.body.data;
-
-  try {
-      const collection = await Collection.findOne({ collectionUrl });
-      if (!collection) {
-          return res.status(404).json({ message: "Collection not found" });
-      }
-      if (!collection.shortUrlList.includes(shortUrl)) {
-          return res.status(204).end(); 
-      }
-
-      collection.shortUrlList = collection.shortUrlList.filter(
-          (url) => url !== shortUrl
-      );
-
-      await collection.save();
-      res.status(200).json(collection);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -95,47 +28,31 @@ const getUrls = async (req, res) => {
 const getUrlByShortUrl = async (req, res) => {
   const shortUrl = req.params.shortUrl;
   try {
-    const url = await Url.findOne({ shortUrl });
-    if (url) {
-      res.status(200).send(url.originalUrl);
-    } else {
-      res.status(404).json({ message: 'URL not found' });
+    const result = await Url.findOneAndUpdate(
+      { shortUrl },
+      {
+          $inc: { viewCount: 1 },
+          $set: { updatedAt: Date.now() }
+      },
+      { new: true } 
+    );
+
+    if (!result) {
+        return res.status(404).json({ message: 'URL not found' });
     }
+    return res.status(200).send(result.originalUrl);  
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-const getCollection = async (req, res) => {
-  const collectionUrl = req.params.collectionUrl;
-  try {
-
-    const collection = await Collection.findOne({ collectionUrl });
-    if (collection) {
-      const promises = collection.shortUrlList.map(async (shortUrl) => {
-        const url = await Url.findOne({ shortUrl });
-        return url;
-      });
-      const values = await Promise.all(promises);
-      const customCollection = {
-        ...collection.toObject(),
-        urls: values,
-      };
-      res.status(200).json(customCollection);
-    } else {
-      res.status(404).json({ message: 'Collection not found' });
-    }
-  } catch (err) {
-    res.status(500).json({ message: 'Error finding collection', error: err });
-  }
+const updateUrlMetadata = async (req, res) => { // Unused
+  // TODO
 };
 
 module.exports = {
   createShortUrl,
-  createCollection,
-  addToCollection,
-  deleteFromCollection,
   getUrls,
   getUrlByShortUrl,
-  getCollection,
+  updateUrlMetadata,
 };

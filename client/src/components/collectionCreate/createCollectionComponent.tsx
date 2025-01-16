@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Paper,
   Typography,
+  Box,
 } from '@mui/material';
 import { textboxStyles } from '../../styles/textboxStyles';
 
@@ -76,20 +77,21 @@ const CreateCollection: React.FC = () => {
       </Button>
 
       {/* Success Snackbar */}
-      <Snackbar
-        open={success}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          Collection created successfully!{' '}
-          {collectionUrl && (
-            <a href={collectionUrl} target="_blank" rel="noopener noreferrer">
-              View Collection
-            </a>
-          )}
-        </Alert>
-      </Snackbar>
+      {success && collectionUrl && (
+        <Box sx={textboxStyles.link}>
+          <Typography variant="h6" gutterBottom>
+            Your short URL:
+          </Typography>
+          <a
+            href={`/${collectionUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={textboxStyles.link.a}
+          >
+            {collectionUrl}
+          </a>
+        </Box>
+      )}
 
       {/* Error Snackbar */}
       <Snackbar

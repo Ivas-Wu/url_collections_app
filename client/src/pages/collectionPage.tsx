@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CollectionDetailListing from '../components/collectionDetailListing/collectionDetailListing';
 import UrlShortenerForm from '../components/urlShortenerForm/urlShortenerForm';
 import { PageConstants } from '../constant/constants';
@@ -14,9 +14,13 @@ const CollectionsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [refreshTable, setRefreshTable] = useState(false);
-
+  const redirectingRef = useRef(false);
+  
   useEffect(() => {
       const fetchCollections = async () => {
+        if (redirectingRef.current) return;
+
+        redirectingRef.current = true;
         try {
           const response: Collection = await getCollection(collectionId);
           setCollections(response);
@@ -24,6 +28,7 @@ const CollectionsPage: React.FC = () => {
           //setError(err instanceof Error ? err.message : 'An error occurred');
           setError("No collection found.")
         } finally {
+          redirectingRef.current = false;
           setLoading(false);
         }
       };

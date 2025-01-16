@@ -49,12 +49,21 @@ export const removeUrlFromCollection = async (collectionUrl: string, shortUrl: s
     const data = { collectionUrl, shortUrl };
     try {
         const response = await axios.patch(`${API_URL}/api/collections/delete`, {data});
-        if (response.status === 204) {
-            //already removed from collection, sync issue
+        if (response.status !== 204) {
+            throw new Error('Failed to delete url from collection');
         }
-        else if (response.status !== 200) {
-            throw new Error('Failed to add url to collection');
+    } catch (err) {
+      throw err;
+    }
+};
+
+export const findCollection = async (collectionUrl: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/collections/find/${collectionUrl}`);
+        if (response.status !== 200) {
+            throw new Error('Failed to find collection');
         }
+        return response.data;
     } catch (err) {
       throw err;
     }

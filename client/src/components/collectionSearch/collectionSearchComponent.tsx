@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Paper } from '@mui/material';
+import { TextField, Button, Box, Typography, Paper, Snackbar, Alert } from '@mui/material';
 import { textboxStyles } from '../../styles/textboxStyles';
+import { findCollection } from '../../services/collectionService';
 
 const CollectionSearchComponent: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
-  const handleSearch = () => {
-    console.log('Searching for:', searchQuery);
-    // Add your search logic here
+  const handleSearch = async () => {
+    if (!searchQuery) return;
+    try {
+      const response = await findCollection(searchQuery);
+      if (response.length === 1) {
+        window.location.href += "/" + response[0].collectionUrl;
+      }
+    } catch {
+      setError('Cannot find collection.');
+    }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -38,6 +47,18 @@ const CollectionSearchComponent: React.FC = () => {
       >
         Search
       </Button>
+
+      {error && (
+              <Snackbar
+                open={!!error}
+                autoHideDuration={6000}
+                onClose={() => setError('')}
+              >
+                <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
+                  {error}
+                </Alert>
+              </Snackbar>
+            )}
     </Paper>
   );
 };

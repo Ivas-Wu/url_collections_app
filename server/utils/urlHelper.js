@@ -45,8 +45,13 @@ const attemptToAddCollection = async (collectionName, collectionUrl) => {
     }
 };
 
+const updateUrlMetadataLogic = async (url) => {
+    // TODO
+};
+
 module.exports = {
     attemptToAddUrl,
     attemptToAddCollection,
+    updateUrlMetadataLogic
 };
   
