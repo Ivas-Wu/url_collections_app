@@ -23,12 +23,14 @@ interface CollectionDetailsProps {
   collectionId: string;
   collectionData: Collection | undefined;
   onUrlChanged: () => void;
+  onError: (errorMessage: string) => void;
 }
 
 const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   collectionId,
   collectionData,
   onUrlChanged,
+  onError,
 }) => {
   const [collections, setCollections] = useState<Url[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,9 +58,15 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   };
 
   const handleDelete = async (rowId: string) => {
-    await removeUrlFromCollection(collectionId, rowId);
-    onUrlChanged();
-    handleMenuClose();
+    try{
+      await removeUrlFromCollection(collectionId, rowId);
+      onUrlChanged();
+      handleMenuClose();
+    }
+    catch (err) {
+      onError(err instanceof Error ? err.message : 'Cannot remove collection.');
+    }
+    
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {

@@ -13,7 +13,7 @@ import {
   CircularProgress,
   Box,
 } from '@mui/material';
-import { textboxStyles } from '../../styles/textboxStyles';
+import { textboxStyles } from '../styles/textboxStyles';
 
 interface UrlShortenerFormProps {
   parentComponent: string;
@@ -61,7 +61,7 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
       }
       setShortUrl(response!.shortUrl);
     } catch (err) {
-      setError('Error creating short URL. Please try again.');
+      setError(err instanceof Error ? err.message : 'Registration failed, please try again.');
     } finally {
       setLoading(false);
     }

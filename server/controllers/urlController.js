@@ -10,7 +10,7 @@ const createShortUrl = async (req, res) => {
       res.status(201).json({ message: 'URL shortened!', newUrl: urlToSave });
     }
   } catch (err) {
-    res.status(500).json({ message: 'Error creating URL', error: err });
+    res.status(500).json({ error: 'Error creating URL', error: err });
   }
 };
 
@@ -20,7 +20,7 @@ const getUrls = async (req, res) => {
     const urls = await Url.find();
     res.status(200).json(urls);
   } catch (err) {
-    res.status(500).json({ message: 'Error retrieving URLs', error: err });
+    res.status(500).json({ error: 'Error retrieving URLs', error: err });
   }
 };
 
@@ -38,11 +38,11 @@ const getUrlByShortUrl = async (req, res) => {
     );
 
     if (!result) {
-        return res.status(404).json({ message: 'URL not found' });
+        return res.status(404).json({ error: 'URL not found' });
     }
     return res.status(200).send(result.originalUrl);  
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ error: 'Server error', error: error.message });
   }
 };
 

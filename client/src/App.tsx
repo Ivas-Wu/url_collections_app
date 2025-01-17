@@ -5,6 +5,8 @@ import CollectionsPage from './pages/collectionPage'; // Import the Collections 
 import RedirectPage from './pages/redirectPage';
 import AppLayout from './components/navBar/AppLayout';
 import CollectionSearchComponent from './components/collectionSearch/collectionSearchComponent';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +17,8 @@ const App: React.FC = () => {
           <Route path="/collections" element={<CollectionSearchComponent />} /> {/* TODO */}
           <Route path="/collections/:collectionId" element={<CollectionsPage />} /> {/* Collections page */}
           <Route path="/:shortUrl" element={<RedirectPage />} /> {/* Redirect page */}
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
         </AppLayout>
     </BrowserRouter>

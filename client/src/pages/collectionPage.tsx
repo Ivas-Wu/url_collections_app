@@ -5,14 +5,16 @@ import { PageConstants } from '../constant/constants';
 import { useParams } from 'react-router-dom';
 import { Collection } from '../models/collections.models';
 import { getCollection } from '../services/collectionService';
-import { Box, Typography } from '@mui/material';
-import { textboxStyles } from '../styles/textboxStyles';
+import { Alert, Box, Snackbar, Typography } from '@mui/material';
+import { textboxStyles } from '../components/styles/textboxStyles';
+import ErrorNoficationsComponent from '../components/errorNotif/errorNotif';
 
 const CollectionsPage: React.FC = () => {
   const { collectionId } = useParams();
   const [collections, setCollections] = useState<Collection>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [childError, setChildError] = useState<string>("");
   const [refreshTable, setRefreshTable] = useState(false);
   const redirectingRef = useRef(false);
   
@@ -25,8 +27,7 @@ const CollectionsPage: React.FC = () => {
           const response: Collection = await getCollection(collectionId);
           setCollections(response);
         } catch (err) {
-          //setError(err instanceof Error ? err.message : 'An error occurred');
-          setError("No collection found.")
+          setError(err instanceof Error ? err.message : 'No collection found.');
         } finally {
           redirectingRef.current = false;
           setLoading(false);
@@ -35,7 +36,11 @@ const CollectionsPage: React.FC = () => {
   
       fetchCollections();
     }, [refreshTable]);
-  
+    
+    const handleChildError = (childError: string) => {
+      setChildError(childError);
+    };
+
     if (error) {
       return (
         <Box sx={textboxStyles.errorbox}>
@@ -58,6 +63,13 @@ const CollectionsPage: React.FC = () => {
             collectionId={collectionId || ""}
             collectionData={collections}
             onUrlChanged={() => setRefreshTable(!refreshTable)}
+            onError={handleChildError}
+          />
+        )}
+        {childError && (
+          <ErrorNoficationsComponent
+            errorMessage={childError}
+            clearError={handleChildError}
           />
         )}
       </div>
