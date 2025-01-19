@@ -12,7 +12,7 @@ const collectionMapping = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
     ownerName: { type: String, required: false, default: "" },
     visibility: {
-        type: String,
+        type: Number,
         enum: Object.values(visibilityEnum),
         default: visibilityEnum.PUBLIC_VO
     },

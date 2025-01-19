@@ -1,5 +1,5 @@
 const Collection = require('../models/Collection');
-const { visibilityEnum, resultEnum } = require('../models/constants');
+const { visibilityEnum, requestTypeEnum, accessEnum } = require('../models/constants');
 const { generateShortUrl } = require('./common');
 
 const updateCollectionMetadataLogic = async (collection) => {
@@ -17,8 +17,8 @@ const attemptToAddCollection = async (collectionName, collectionUrl, user, visib
             newCollection.visibility = visibility;
         }
         if (user) {
-            newCollection.ownerName = user.username || user.email;
-            newCollection.accessList = [user.username]
+            newCollection.ownerName = user.email;
+            newCollection.accessList = [user.email]
         }
       
         await newCollection.save();
@@ -35,52 +35,81 @@ const attemptToAddCollection = async (collectionName, collectionUrl, user, visib
     }
 };
 
-const findCollectionAuth = async (collectionUrl, user) => {
-    const collection = await Collection.findOne({ collectionUrl });
-    let returnData = resultEnum.NO_ACCESS;
-    if (!collection) {
-        returnData = resultEnum.NOT_FOUND;
-    }
-    else if (collection.visibility == visibilityEnum.PRIVATE || collection.visibility == visibilityEnum.PRIVATE_VO) {
-        if (user) {
-            if (collection.ownerName === user.username) {
-                returnData = collection;
-            }
-            else {
-                collection.accessList.forEach((u) => {
-                    if (u === user.username) {
-                        returnData = collection;
-                    }
-                });
-            }
-        }
-    } //TODO add view only access message
-    else {
-        returnData = collection;
+const findCollectionAuth = async (collectionString, user = null, useName = false, requestType = requestTypeEnum.VIEW) => {
+    var collection = await Collection.findOne({ collectionUrl: collectionString });
+    if (!collection && useName) {
+        collection = await Collection.findOne({ collectionName: collectionString });
     }
 
-    return returnData;
+    if (collection) {
+        const userAccess = getUserAccessLevel(collection, user);
+        verifyAccessToReqestType(userAccess, requestType);
+        return [collection, userAccess];
+    }
+    else {
+        throw new Error("Collection not found.");
+    }
 }
 
-const verifyCollection = async (collection) => {
-    if (collection == resultEnum.NOT_FOUND) {
-        throw new Error("Collection not found.");
-    } else if (collection == resultEnum.NO_ACCESS) {
-        throw new Error("You do not have access to this collection.");
-    } else if (collection == resultEnum.NO_MODIFY_ACCESS) {
-        throw new Error("You do not have access to modify this collection.");
-    } else if (!collection.collectionUrl) {
-        throw new Error("Bad data.");
-    }
+const getUserAccessLevel = (collection, user) => {
+    const vis = collection.visibility;
+    var res = accessEnum.NONE;
 
-    return collection;
+    if (!user && isPublic(vis)) {
+        if (vis === visibilityEnum.PUBLIC) {
+            res = accessEnum.FULL;
+        }
+        else if (vis === visibilityEnum.PUBLIC_VO) {
+            res = accessEnum.VIEW_ONLY;
+        }
+    }
+    else if (user) {
+        if (collection.ownerName === user.email) {
+            res = accessEnum.OWNER;
+        }
+        else {
+            var found = false;
+            collection.accessList.forEach((u) => {
+                if (u === user.email) {
+                    found = true;
+                }
+            });
+            if (found && vis === visibilityEnum.PRIVATE) {
+                res = accessEnum.FULL;
+            }
+            else if (found && vis === visibilityEnum.PRIVATE_VO) {
+                res = accessEnum.VIEW_ONLY;
+            }
+        }
+    }
+    return res;
 };
 
+const isPublic = (visibility) => {
+    return visibilityEnum.PUBLIC === visibility || visibilityEnum.PUBLIC_VO === visibility;
+}
+
+const verifyAccessToReqestType = (access, requestType) => {
+    if (access === accessEnum.NONE) {
+        throw new Error("You do not have access to this collection.");
+    } else if (access === accessEnum.VIEW_ONLY && !viewOnlyAccessRequests(requestType)) {
+        throw new Error("You do not have access to modify this collection.");
+    } else if (access === accessEnum.FULL && !fullAccessRequests(requestType)) {
+        throw new Error("You do not have access to modify this collection.");
+    }
+};
+
+const viewOnlyAccessRequests = (rt) => {
+    return rt === requestTypeEnum.VIEW;
+}
+
+const fullAccessRequests = (rt) => {
+    return viewOnlyAccessRequests(rt) && rt === requestTypeEnum.MODIFY_ITEM;
+}
 
 module.exports = {
     updateCollectionMetadataLogic,
     attemptToAddCollection,
     findCollectionAuth,
-    verifyCollection
 };
   

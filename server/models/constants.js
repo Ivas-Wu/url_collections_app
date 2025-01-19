@@ -1,17 +1,25 @@
 const visibilityEnum = {
-    PUBLIC: 'public',
-    PRIVATE: 'private',
-    PUBLIC_VO: 'public-vo',
-    PRIVATE_VO: 'private-vo'
+    PRIVATE_VO: 0,
+    PRIVATE: 1,
+    PUBLIC_VO: 2,
+    PUBLIC: 3, 
 };
 
-const resultEnum = {
-    NOT_FOUND: 'not-found',
-    NO_ACCESS: 'no-access',
-    NO_MODIFY_ACCESS: 'no-modify-access',
+const requestTypeEnum = {
+    MODIFY_SETTING: 0,
+    MODIFY_ITEM: 1,
+    VIEW: 2,
+};
+
+const accessEnum = {
+    OWNER: 0,
+    FULL: 1,
+    VIEW_ONLY: 2,
+    NONE: 3,
 };
 
 module.exports = { 
     visibilityEnum,
-    resultEnum
- };
+    requestTypeEnum,
+    accessEnum
+};

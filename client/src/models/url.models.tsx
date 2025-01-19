@@ -7,4 +7,6 @@ export interface Url {
     downCount: number;
     createdAt: string;
     updatedAt: string;
+    ownerName: string;
+    collectionList: string[];
 }

@@ -1,10 +1,11 @@
-import axios, { AxiosError } from 'axios';
+import { handleErrorMessage } from '../utils/common';
+import apiClient from './axiosClient';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const register = async (email: string, password: string, username: string) => {
   try {
-    const response = await axios.post(`${API_URL}/api/register`, {
+    const response = await apiClient.post(`${API_URL}/api/auth/register`, {
       email,
       password,
       username
@@ -16,28 +17,14 @@ export const register = async (email: string, password: string, username: string
 
     return response.data; 
   } catch (err) {
-    if (err instanceof AxiosError) {
-      if (err.response && err.response.data && err.response.data.errors) {
-        const errors = err.response.data.errors;
-        
-        if (Array.isArray(errors)) {
-            throw new Error(errors.map((error) => error.msg).join(', '));
-        } else {
-            throw new Error(errors); 
-        }
-      } else {
-            throw new Error(err.message || 'An unknown error occurred'); 
-      }
-    } else {
-        throw new Error('An unknown error occurred');
-    }
+    throw Error(handleErrorMessage(err));
   }
 };
 
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${API_URL}/api/login`, {
+    const response = await apiClient.post(`${API_URL}/api/auth/login`, {
       email,
       password,
     });
@@ -47,24 +34,16 @@ export const login = async (email: string, password: string) => {
     }
 
     const data = response.data;
-    localStorage.setItem('token', data.token);
+    localStorage.setItem('accessToken', data.accessToken);
 
     return data;
   } catch (err) {
-    if (err instanceof AxiosError) {
-        if (err.response && err.response.data && err.response.data.error) {
-            throw Error(err.response.data.error); 
-        } else {
-            throw Error(err.message || 'An unknown error occurred'); 
-        }
-    } else {
-        throw Error('An unknown error occurred');
-    }
+    throw Error(handleErrorMessage(err));
   }
 };
 
 export const generateHeader = async () => {
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('accessToken'); 
 
   const headers: any = {};
   if (token) {

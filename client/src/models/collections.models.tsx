@@ -10,4 +10,7 @@ export interface Collection {
   downCount: number;
   createdAt: string;
   updatedAt: string;
+  ownerName: string;
+  visibility: number;
+  accessList: string[];
 }

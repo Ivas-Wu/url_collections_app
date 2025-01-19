@@ -13,8 +13,7 @@ const authenticate = (req, res, next) => {
             req.user = decoded;
             next();
         } catch (error) {
-            //Should prompt for relogin
-            res.status(401).json({ error: 'Unauthorized' });
+            res.status(403).json({ error: "Invalid or expired access token" });
         }
     }
 };
