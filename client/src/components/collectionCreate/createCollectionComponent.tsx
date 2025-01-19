@@ -11,7 +11,7 @@ import {
   Typography,
   Box,
 } from '@mui/material';
-import { textboxStyles } from '../../styles/textboxStyles';
+import { textboxStyles } from '../styles/textboxStyles';
 
 const CreateCollection: React.FC = () => {
   const [collectionName, setCollectionName] = useState<string>('');

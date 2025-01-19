@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Paper, Snackbar, Alert } from '@mui/material';
-import { textboxStyles } from '../../styles/textboxStyles';
+import { textboxStyles } from '../styles/textboxStyles';
 import { findCollection } from '../../services/collectionService';
 
 const CollectionSearchComponent: React.FC = () => {
@@ -14,8 +14,8 @@ const CollectionSearchComponent: React.FC = () => {
       if (response.length === 1) {
         window.location.href += "/" + response[0].collectionUrl;
       }
-    } catch {
-      setError('Cannot find collection.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Cannot find collection.');
     }
   };
 

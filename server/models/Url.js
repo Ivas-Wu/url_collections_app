@@ -9,6 +9,8 @@ const urlMapping = new mongoose.Schema({
   downCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  ownerName: { type: String, required: false, default: "" },
+  collectionList: { type: [String], required: false, default: [] }
 });
 
 const Url = mongoose.model('Url', urlMapping);

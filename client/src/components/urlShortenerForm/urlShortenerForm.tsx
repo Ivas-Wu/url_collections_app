@@ -13,7 +13,7 @@ import {
   CircularProgress,
   Box,
 } from '@mui/material';
-import { textboxStyles } from '../../styles/textboxStyles';
+import { textboxStyles } from '../styles/textboxStyles';
 
 interface UrlShortenerFormProps {
   parentComponent: string;
@@ -50,18 +50,22 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
     event.preventDefault();
     setLoading(true);
     setError('');
+    if (!originalUrl.trim()) {
+      setError('Collection name cannot be empty');
+      return;
+    }
 
     try {
       let response: Url | null = null;
       if (addToCollection && onUrlAdded) {
-        response = await addCollection(parentUrl || '', null, originalUrl, altName);
+        response = await addCollection(parentUrl || '', null, originalUrl.trim(), altName);
         onUrlAdded();
       } else {
-        response = await shortenUrl(originalUrl, altName);
+        response = await shortenUrl(originalUrl.trim(), altName);
       }
       setShortUrl(response!.shortUrl);
     } catch (err) {
-      setError('Error creating short URL. Please try again.');
+      setError(err instanceof Error ? err.message : 'Registration failed, please try again.');
     } finally {
       setLoading(false);
     }
