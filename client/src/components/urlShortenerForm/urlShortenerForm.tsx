@@ -48,12 +48,14 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setLoading(true);
-    setError('');
     if (!originalUrl.trim()) {
       setError('Collection name cannot be empty');
       return;
     }
+
+
+    setLoading(true);
+    setError('');
 
     try {
       let response: Url | null = null;

@@ -15,7 +15,8 @@ const {
   deleteFromCollection,
   getCollection,
   updateCollectionSettings,
-  findCollection
+  findCollection,
+  getUserCollections
 } = require('../controllers/collectionController');
 
 const {
@@ -37,10 +38,11 @@ router.post('/url/shorten', authenticate, createShortUrl);
 router.patch('/url/update', authenticate, updateUrlMetadata);
 
 //Collections
-router.get('/collections/:collectionUrl', authenticate, getCollection);
 router.get('/collections/find/:collectionUrl', authenticate, findCollection);
+router.get('/collections/user', authenticate, getUserCollections);
+router.get('/collections/:collectionUrl', authenticate, getCollection);
 
-router.post('/collections/newCollection', authenticate, createCollection);
+router.post('/collections/new-collection', authenticate, createCollection);
 
 router.patch('/collections/add', authenticate, addToCollection);
 router.patch('/collections/delete', authenticate, deleteFromCollection);

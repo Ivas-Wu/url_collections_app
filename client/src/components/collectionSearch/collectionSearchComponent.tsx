@@ -49,16 +49,16 @@ const CollectionSearchComponent: React.FC = () => {
       </Button>
 
       {error && (
-              <Snackbar
-                open={!!error}
-                autoHideDuration={6000}
-                onClose={() => setError('')}
-              >
-                <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
-                  {error}
-                </Alert>
-              </Snackbar>
-            )}
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError('')}
+        >
+          <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
     </Paper>
   );
 };

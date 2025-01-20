@@ -7,15 +7,9 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, default: 'user' },
-    collections: {type: [
-        {
-            collectionUrl: String,
-            visibility: String,
-        },
-    ], required: false, default: []},
+    collections: {type: [String], required: false, default: []},
 });
 
-// Hash password before saving
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     const salt = await bcrypt.genSalt(10);
@@ -23,7 +17,6 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-// Compare passwords
 UserSchema.methods.comparePassword = function (password) {
     return bcrypt.compare(password, this.password);
 };

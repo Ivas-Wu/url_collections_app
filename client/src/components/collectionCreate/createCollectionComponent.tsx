@@ -55,7 +55,7 @@ const CreateCollection: React.FC = () => {
   return (
     <Paper sx={textboxStyles.paper}>
       <Typography sx={textboxStyles.title}>
-      Create a New Collection
+        Create a New Collection
       </Typography>
       <TextField
         fullWidth

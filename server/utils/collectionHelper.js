@@ -1,4 +1,5 @@
 const Collection = require('../models/Collection');
+const Url = require('../models/Url');
 const { visibilityEnum, requestTypeEnum, accessEnum } = require('../models/constants');
 const { generateShortUrl } = require('./common');
 
@@ -20,14 +21,15 @@ const attemptToAddCollection = async (collectionName, collectionUrl, user, visib
             newCollection.ownerName = user.email;
             newCollection.accessList = [user.email]
         }
-      
+
         await newCollection.save();
         if (user) {
-            user.collections.push({collectionUrl, visibility})
+            user.collections.push(newCollection.collectionUrl);
+            await user.save();
         }
         return newCollection;
     } catch (err) {
-        if (err.code === 11000) { 
+        if (err.code === 11000) {
             attemptToAddCollection(collectionName, generateShortUrl(), user, visibility);
         } else {
             throw err;
@@ -107,9 +109,28 @@ const fullAccessRequests = (rt) => {
     return viewOnlyAccessRequests(rt) && rt === requestTypeEnum.MODIFY_ITEM;
 }
 
+const findUserCollections = async (user) => {
+    const collections = await Collection.find({ collectionUrl: { $in: user.collections } });
+    const mappedCollections = await Promise.all(
+        collections.map((collection) => mapCollectionData(collection))
+    );
+
+    return mappedCollections;
+}
+
+const mapCollectionData = async (collection) => {
+    const urls = await Url.find({ shortUrl: { $in: collection.shortUrlList } });
+    const urlMap = new Map(urls.map((url) => [url.shortUrl, url]));
+    return {
+        ...collection.toObject(),
+        urls: collection.shortUrlList.map((shortUrl) => urlMap.get(shortUrl) || null),
+    };
+}
+
 module.exports = {
     updateCollectionMetadataLogic,
     attemptToAddCollection,
     findCollectionAuth,
+    findUserCollections,
+    mapCollectionData
 };
-  

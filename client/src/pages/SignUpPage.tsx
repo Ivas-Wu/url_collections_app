@@ -22,13 +22,13 @@ const SignUpPage: React.FC = () => {
     setSuccess('');
 
     if (!email || !password || !username) {
-        setError('Please fill in all fields.');
-        return;
+      setError('Please fill in all fields.');
+      return;
     }
 
     try {
-        await register(email, password, username);
-        setSuccess('Registration successful!');
+      await register(email, password, username);
+      setSuccess('Registration successful!');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed, please try again.');
     }
@@ -59,13 +59,13 @@ const SignUpPage: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
-                  fullWidth
-                  label="Username"
-                  type="username"
-                  variant="outlined"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
+          fullWidth
+          label="Username"
+          type="username"
+          variant="outlined"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
         <TextField
           fullWidth
           label="Password"

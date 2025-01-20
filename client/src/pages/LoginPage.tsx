@@ -7,13 +7,15 @@ import {
   Container,
   Alert,
 } from '@mui/material';
-import { login } from '../services/authService';
+import { userLogin } from '../services/authService';
+import { useAuth } from '../components/auth/authContext';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { isLoggedIn, login, logout } = useAuth();
 
   const handleLogin = async () => {
     setError('');
@@ -25,8 +27,9 @@ const LoginPage: React.FC = () => {
 
     try {
       // Replace with your login API call
-      const userData = await login(email, password);
+      await userLogin(email, password);
       setSuccess('Login successful!');
+      login();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed, please try again.');
     }

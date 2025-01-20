@@ -87,9 +87,9 @@ const CollectionSettingsModal: React.FC<CollectionSettingsModalProps> = ({
               ref={tableRef}
               collection={collection}
             ></SettingTableListing>
-          </Box>        
+          </Box>
         </Box>
-        
+
         <Box mt={3} textAlign="right">
           <Button onClick={onClose} sx={CollectionSettingsModalStyles.cancelButton}>
             Cancel

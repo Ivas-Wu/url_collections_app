@@ -66,7 +66,7 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   };
 
   const handleDelete = async (rowId: string) => {
-    try{
+    try {
       await removeUrlFromCollection(collectionId, rowId);
       onUrlChanged();
       handleMenuClose();
@@ -74,7 +74,7 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
     catch (err) {
       onError(err instanceof Error ? err.message : 'Cannot remove collection.');
     }
-    
+
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
@@ -94,7 +94,7 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
               <TableCell sx={tableStyles.tableCell}>URL</TableCell>
               <TableCell sx={tableStyles.tableCell}>Short URL</TableCell>
               <TableCell sx={tableStyles.tableCell}>Created At</TableCell>
-              <TableCell sx={tableStyles.tableCell}>Actions</TableCell>
+              <TableCell sx={tableStyles.tableCell}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -115,12 +115,14 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
                   </TableCell>
                   <TableCell>{collection.createdAt}</TableCell>
                   <TableCell>
-                    <IconButton
-                      aria-label="actions"
-                      onClick={(e) => handleMenuClick(e, collection.shortUrl)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
+                    {editAccess && (
+                      <IconButton
+                        aria-label="actions"
+                        onClick={(e) => handleMenuClick(e, collection.shortUrl)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -132,8 +134,7 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        {editAccess && (<MenuItem onClick={() => handleDelete(selectedRowId!)}>Remove from collection</MenuItem>)}
-        {/* Add more menu items here if needed */}
+        <MenuItem onClick={() => handleDelete(selectedRowId!)}>Remove from collection</MenuItem>
       </Menu>
       <Pagination
         count={Math.ceil(collections.length / itemsPerPage)}

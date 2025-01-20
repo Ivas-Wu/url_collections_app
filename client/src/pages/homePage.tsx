@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
       <UrlShortenerForm
         parentComponent={PageConstants.HOME}
       />
-      <CreateCollection/>
+      <CreateCollection />
     </div>
   );
 };

@@ -8,8 +8,8 @@ const appLayoutStyles = {
   } as SxProps<Theme>,
 
   mainContent: {
-    flexGrow: 1, // Ensures main content grows to fill available space
-    paddingTop: '5em', // Adjust this to your AppBar height
+    flexGrow: 1,
+    paddingTop: '5em',
     paddingBottom: '5em',
   } as SxProps<Theme>,
 

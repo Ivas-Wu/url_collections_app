@@ -19,7 +19,7 @@ const CollectionsPage: React.FC = () => {
   const [childError, setChildError] = useState<string>("");
   const [refreshTable, setRefreshTable] = useState(false);
   const redirectingRef = useRef(false);
-  
+
   const [userAccess, setUserAccess] = useState<AccessConstants>();
   const [editAccess, setEditAccess] = useState<boolean>(false);
   const [ownerAccess, setOwnerAccess] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const CollectionsPage: React.FC = () => {
 
     fetchCollections();
   }, [refreshTable]);
-  
+
   const handleChildError = (childError: string) => {
     setChildError(childError);
   };

@@ -10,9 +10,9 @@ export const shortenUrl = async (originalUrl: string, altName: string | null): P
       throw new Error('Failed to shorten Url');
     }
     return response.data.newUrl;
-    } catch (err) {
-        throw err;
-    }
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const redirectPage = async (shortUrl: string | undefined) => {
@@ -23,6 +23,6 @@ export const redirectPage = async (shortUrl: string | undefined) => {
     }
     return response.data;
   } catch (err) {
-      throw err;
+    throw err;
   }
 };

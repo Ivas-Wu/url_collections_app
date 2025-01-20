@@ -26,19 +26,28 @@ export const findCollection = async (collectionUrl: string) => {
     }
 };
 
-export const createCollection = async (collectionName: string) : Promise<Collection> => {
+export const getUserCollections = async (): Promise<Collection[]> => {
     try {
-        const response = await apiClient.post(`${API_URL}/api/collections/newCollection`, { collectionName });
+        const response = await apiClient.get(`${API_URL}/api/collections/user`);
+        return response.data.collections;
+    } catch (err) {
+        throw Error(handleErrorMessage(err));
+    }
+};
+
+export const createCollection = async (collectionName: string): Promise<Collection> => {
+    try {
+        const response = await apiClient.post(`${API_URL}/api/collections/new-collection`, { collectionName });
         return response.data.collectionUrl;
     } catch (err) {
         throw Error(handleErrorMessage(err));
     }
 };
 
-export const addCollection = async (collectionUrl: string, shortUrl: string | null, originalUrl: string | null, altName: string | null) : Promise<Url> => {
+export const addCollection = async (collectionUrl: string, shortUrl: string | null, originalUrl: string | null, altName: string | null): Promise<Url> => {
     const data = { collectionUrl, shortUrl, originalUrl, altName };
     try {
-        const response = await apiClient.patch(`${API_URL}/api/collections/add`, {data});
+        const response = await apiClient.patch(`${API_URL}/api/collections/add`, { data });
         return response.data;
     } catch (err) {
         throw Error(handleErrorMessage(err));
@@ -48,7 +57,7 @@ export const addCollection = async (collectionUrl: string, shortUrl: string | nu
 export const removeUrlFromCollection = async (collectionUrl: string, shortUrl: string) => {
     const data = { collectionUrl, shortUrl };
     try {
-        await apiClient.patch(`${API_URL}/api/collections/delete`, {data});
+        await apiClient.patch(`${API_URL}/api/collections/delete`, { data });
     } catch (err) {
         throw Error(handleErrorMessage(err));
     }
@@ -57,10 +66,10 @@ export const removeUrlFromCollection = async (collectionUrl: string, shortUrl: s
 export const updateCollectionSettings = async (collectionUrl: string, collectionAccess: AccessConstants, collectionName: string, accessList: string[]) => {
     const data = { collectionUrl, collectionAccess, collectionName, accessList };
     try {
-        const response = await apiClient.patch(`${API_URL}/api/collections/update`, {data});
+        const response = await apiClient.patch(`${API_URL}/api/collections/update`, { data });
         return response.data;
     } catch (err) {
         throw Error(handleErrorMessage(err));
     }
 };
-  
+

@@ -4,7 +4,7 @@ import CollectionSearchComponent from '../components/collectionSearch/collection
 const CollectionsLandingPage: React.FC = () => {
 
   return (
-    <CollectionSearchComponent/>
+    <CollectionSearchComponent />
   );
 };
 

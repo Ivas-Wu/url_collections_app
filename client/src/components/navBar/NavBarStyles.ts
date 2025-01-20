@@ -9,26 +9,31 @@ export const appBarStyles = (isScrolled: boolean) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: '0 16px',
-    height: '5em', // Standard AppBar height in MUI
+    height: '5em',
   };
   
   export const buttonContainerStyles = {
     display: 'flex',
     alignItems: 'center',
-    height: '100%', // Full height of AppBar
+    height: '100%',
   };
   
   export const menuButton = {
-    borderColor: '#7986cb', // Soft purple
-    color: '#7986cb', // Match border color
+    borderColor: '#7986cb',
+    color: '#7986cb',
     textTransform: 'none',
     fontWeight: 600,
     fontSize: '1em',
-    height: '100%', // Full height of AppBar
-    borderRadius: 0, // Square corners to emphasize edges
+    height: '100%',
+    borderRadius: 0,
     padding: '0 3em 0 3em',
     '&:hover': {
-      backgroundColor: '#d1c4e9', // Lighter purple on hover
+      backgroundColor: '#d1c4e9',
     },
+  };
+
+  export const containerContainerStyles = {
+    display: 'flex',
+    justifyContent: 'space-between',
   };
   

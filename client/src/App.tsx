@@ -9,24 +9,31 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import theme from './themes/basetheme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { AuthProvider } from './components/auth/authContext';
+import LogoutPage from './pages/LogoutPage';
+import UserCollectionsPage from './pages/userCollectionsPage';
 
 const App: React.FC = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <AppLayout>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/collections" element={<CollectionSearchComponent />} />
-            <Route path="/collections/:collectionId" element={<CollectionsPage />} />
-            <Route path="/:shortUrl" element={<RedirectPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/login" element={<LoginPage />} />
-          </Routes>
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/collections" element={<CollectionSearchComponent />} />
+              <Route path="/collections/:collectionId" element={<CollectionsPage />} />
+              <Route path="/collections/user" element={<UserCollectionsPage />} />
+              <Route path="/:shortUrl" element={<RedirectPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/logout" element={<LogoutPage />} />
+            </Routes>
           </AppLayout>
-      </BrowserRouter>
-    </ThemeProvider>
+        </BrowserRouter>
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 

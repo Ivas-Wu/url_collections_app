@@ -15,14 +15,14 @@ export const register = async (email: string, password: string, username: string
       throw new Error('Registration failed');
     }
 
-    return response.data; 
+    return response.data;
   } catch (err) {
     throw Error(handleErrorMessage(err));
   }
 };
 
 
-export const login = async (email: string, password: string) => {
+export const userLogin = async (email: string, password: string) => {
   try {
     const response = await apiClient.post(`${API_URL}/api/auth/login`, {
       email,
@@ -35,19 +35,25 @@ export const login = async (email: string, password: string) => {
 
     const data = response.data;
     localStorage.setItem('accessToken', data.accessToken);
-
+    window.location.href = '/';
     return data;
   } catch (err) {
     throw Error(handleErrorMessage(err));
   }
 };
 
+export const userLogout = () => {
+  localStorage.removeItem('accessToken');
+  sessionStorage.removeItem('user');//for future not used rn
+  window.location.href = '/';
+};
+
 export const generateHeader = async () => {
-  const token = localStorage.getItem('accessToken'); 
+  const token = localStorage.getItem('accessToken');
 
   const headers: any = {};
   if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    headers['Authorization'] = `Bearer ${token}`;
   }
   return headers;
 }

@@ -17,7 +17,7 @@ const RedirectPage: React.FC = () => {
                 window.location.href = originalUrl;
             } catch (err) {
                 console.error('Error redirecting:', err);
-                window.location.href = '/404'; 
+                window.location.href = '/404';
             }
             finally {
                 redirectingRef.current = false;
