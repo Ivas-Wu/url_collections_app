@@ -19,7 +19,6 @@ export const appBarStyles = (isScrolled: boolean) => ({
   };
   
   export const menuButton = {
-    borderColor: '#7986cb',
     color: '#7986cb',
     textTransform: 'none',
     fontWeight: 600,

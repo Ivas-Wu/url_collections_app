@@ -19,7 +19,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </Box>
 
       <Box component="footer" sx={appLayoutStyles.footer}>
-        Footer Content
       </Box>
     </Box>
   );

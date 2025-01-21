@@ -13,11 +13,14 @@ const RedirectPage: React.FC = () => {
             redirectingRef.current = true;
 
             try {
-                const originalUrl: string = await redirectPage(shortUrl);
-                window.location.href = originalUrl;
+                var originalUrl: string = await redirectPage(shortUrl);
+                if (!/^https?:\/\//.test(originalUrl)) {
+                    originalUrl = `http://${originalUrl}`;
+                }
+                window.location.assign(originalUrl);
             } catch (err) {
                 console.error('Error redirecting:', err);
-                window.location.href = '/404';
+                window.location.href = '/'; // TODO make a 404 not found page
             }
             finally {
                 redirectingRef.current = false;

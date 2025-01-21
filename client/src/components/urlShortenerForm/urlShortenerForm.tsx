@@ -53,7 +53,6 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
       return;
     }
 
-
     setLoading(true);
     setError('');
 
@@ -66,6 +65,8 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
         response = await shortenUrl(originalUrl.trim(), altName);
       }
       setShortUrl(response!.shortUrl);
+      setOriginalUrl('');
+      setAltName('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed, please try again.');
     } finally {

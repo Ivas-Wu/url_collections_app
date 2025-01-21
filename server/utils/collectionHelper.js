@@ -106,7 +106,7 @@ const viewOnlyAccessRequests = (rt) => {
 }
 
 const fullAccessRequests = (rt) => {
-    return viewOnlyAccessRequests(rt) && rt === requestTypeEnum.MODIFY_ITEM;
+    return viewOnlyAccessRequests(rt) || rt === requestTypeEnum.MODIFY_ITEM;
 }
 
 const findUserCollections = async (user) => {
