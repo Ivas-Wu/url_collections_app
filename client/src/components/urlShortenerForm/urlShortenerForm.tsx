@@ -12,8 +12,12 @@ import {
   Alert,
   CircularProgress,
   Box,
+  IconButton,
 } from '@mui/material';
 import { textboxStyles } from '../styles/textboxStyles';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 interface UrlShortenerFormProps {
   parentComponent: string;
@@ -29,11 +33,14 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
   const [originalUrl, setOriginalUrl] = useState<string>('');
   const [shortUrl, setShortUrl] = useState<string>('');
   const [altName, setAltName] = useState<string | null>(null);
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
   const [submitButtonText, setSubmitButtonText] = useState<string>('');
+
   const [showLink, setShowLink] = useState<boolean>(false);
   const [addToCollection, setAddToCollection] = useState<boolean>(false);
+  const [showAdditionalSettings, setShowAdditionalSettings] = useState<boolean>(true);
+
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (parentComponent === PageConstants.HOME) {
@@ -74,40 +81,78 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
     }
   };
 
+  const getIcon = () => {
+    return showAdditionalSettings ? <RemoveIcon /> : <AddIcon />
+  }
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSubmit(event);
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.origin + `/${shortUrl}`).then(() => {
+    }).catch((err) => {
+    });
+  };
+
   return (
     <Paper sx={textboxStyles.paper}>
-      <Typography sx={textboxStyles.title}>
-        {parentComponent === PageConstants.HOME ? 'Shorten URL' : 'Add to collection'}
-      </Typography>
-      <form onSubmit={handleSubmit}>
+      <Box sx={textboxStyles.titleContainer}>
+        <Typography sx={textboxStyles.titleText} >
+          {parentComponent === PageConstants.HOME ? "Shorten URL" : "Add to collection"}
+        </Typography>
+        <Box
+          component="button"
+          onClick={() => setShowAdditionalSettings(!showAdditionalSettings)}
+          sx={textboxStyles.titleIcon}
+        >
+          {getIcon()}
+        </Box>
+      </Box>
+      <Box component="form" onSubmit={handleSubmit} sx={textboxStyles.formBody} onKeyPress={handleKeyPress}>
         <TextField
           fullWidth
           label="Enter your URL"
           value={originalUrl}
           onChange={(e) => setOriginalUrl(e.target.value)}
-          placeholder="http://example.com"
+          placeholder=""
           disabled={loading}
           sx={textboxStyles.textField}
         />
-        <TextField
-          fullWidth
-          label="Enter a name"
-          value={altName}
-          onChange={(e) => setAltName(e.target.value)}
-          placeholder="Site 1"
-          disabled={loading}
-          sx={textboxStyles.textField}
-        />
-        <Button
-          sx={textboxStyles.button}
-          variant="contained"
-          type="submit"
-          disabled={loading}
-          startIcon={loading ? <CircularProgress size={20} /> : null}
+
+        {showAdditionalSettings && (
+          <TextField
+            fullWidth
+            label="Add a title"
+            value={altName}
+            onChange={(e) => setAltName(e.target.value)}
+            placeholder="Site 1"
+            disabled={loading}
+            sx={textboxStyles.textField}
+          />
+        )}
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 2,
+            mt: 2,
+          }}
         >
-          {loading ? 'Shortening...' : submitButtonText}
-        </Button>
-      </form>
+          <Button
+            sx={textboxStyles.button}
+            variant="contained"
+            type="submit"
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} /> : null}
+          >
+            {loading ? 'Shortening...' : submitButtonText}
+          </Button>
+        </Box>
+      </Box>
 
       {error && (
         <Snackbar
@@ -123,9 +168,6 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
 
       {showLink && shortUrl && (
         <Box sx={textboxStyles.link}>
-          <Typography variant="h6" gutterBottom>
-            Your short URL:
-          </Typography>
           <a
             href={`/${shortUrl}`}
             target="_blank"
@@ -134,6 +176,9 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
           >
             {shortUrl}
           </a>
+          <IconButton onClick={handleCopy} sx={{ ml: 1 }}>
+            <ContentCopyIcon />
+          </IconButton>
         </Box>
       )}
     </Paper>

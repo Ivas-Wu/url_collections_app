@@ -54,7 +54,7 @@ const CollectionSettingsModal: React.FC<CollectionSettingsModalProps> = ({
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={CollectionSettingsModalStyles.modalBox}>
-        <Typography sx={textboxStyles.title}>
+        <Typography sx={textboxStyles.titleText}>
           Collection Settings
         </Typography>
         <Box sx={CollectionSettingsModalStyles.displayParentContainer}>

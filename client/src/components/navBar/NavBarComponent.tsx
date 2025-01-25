@@ -10,6 +10,7 @@ import {
 } from './NavBarStyles';
 import { useAuth } from '../auth/authContext';
 
+
 const NavBar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { isLoggedIn, login, logout } = useAuth();

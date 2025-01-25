@@ -26,7 +26,6 @@ const LoginPage: React.FC = () => {
     }
 
     try {
-      // Replace with your login API call
       await userLogin(email, password);
       setSuccess('Login successful!');
       login();

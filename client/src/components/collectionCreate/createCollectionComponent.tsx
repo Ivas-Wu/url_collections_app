@@ -10,8 +10,12 @@ import {
   Paper,
   Typography,
   Box,
+  IconButton,
 } from '@mui/material';
 import { textboxStyles } from '../styles/textboxStyles';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const CreateCollection: React.FC = () => {
   const [collectionName, setCollectionName] = useState<string>('');
@@ -19,8 +23,10 @@ const CreateCollection: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [collectionUrl, setCollectionUrl] = useState<string | null>(null);
+  const [showAdditionalSettings, setShowAdditionalSettings] = useState<boolean>(true);
 
-  const handleCreateCollection = async () => {
+  const handleCreateCollection = async (event: React.FormEvent) => {
+    event.preventDefault();
     if (!collectionName.trim()) {
       setError('Collection name cannot be empty');
       return;
@@ -52,36 +58,82 @@ const CreateCollection: React.FC = () => {
     setSuccess(false);
   };
 
+  const getIcon = () => {
+    return showAdditionalSettings ? <RemoveIcon /> : <AddIcon />
+  }
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleCreateCollection(event);
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.origin + `/${collectionUrl}`).then(() => {
+    }).catch((err) => {
+    });
+  };
+
   return (
     <Paper sx={textboxStyles.paper}>
-      <Typography sx={textboxStyles.title}>
-        Create a New Collection
-      </Typography>
-      <TextField
-        fullWidth
-        label="Collection Name"
-        value={collectionName}
-        onChange={(e) => setCollectionName(e.target.value)}
-        placeholder="Enter collection name"
-        disabled={loading}
-        sx={textboxStyles.textField}
-      />
-      <Button
-        sx={textboxStyles.button}
-        variant="contained"
-        onClick={handleCreateCollection}
-        disabled={loading}
-        startIcon={loading ? <CircularProgress size={20} /> : null}
-      >
-        {loading ? 'Creating...' : 'Create Collection'}
-      </Button>
+      <Box sx={textboxStyles.titleContainer}>
+        <Typography sx={textboxStyles.titleText}>
+          Create a New Collection
+        </Typography>
+        <Box
+          component="button"
+          onClick={() => setShowAdditionalSettings(!showAdditionalSettings)}
+          sx={textboxStyles.titleIcon}
+        >
+          {getIcon()}
+        </Box>
+      </Box>
 
-      {/* Success Snackbar */}
+      <Box component="form" onSubmit={handleCreateCollection} sx={textboxStyles.formBody} onKeyPress={handleKeyPress}>
+        <TextField
+          fullWidth
+          label="Collection Name"
+          value={collectionName}
+          onChange={(e) => setCollectionName(e.target.value)}
+          placeholder="Enter collection name"
+          disabled={loading}
+          sx={textboxStyles.textField}
+        />
+
+        {/* {showAdditionalSettings && (
+          <TextField
+            fullWidth
+            label="Collection Name"
+            value={collectionName}
+            onChange={(e) => setCollectionName(e.target.value)}
+            placeholder="Enter collection name"
+            disabled={loading}
+            sx={textboxStyles.textField}
+          />
+        )} */}
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 2,
+            mt: 2,
+          }}
+        >
+          <Button
+            sx={textboxStyles.button}
+            variant="contained"
+            type="submit"
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} /> : null}
+          >
+            {loading ? 'Creating...' : 'Create Collection'}
+          </Button>
+        </Box>
+      </Box>
+
       {success && collectionUrl && (
         <Box sx={textboxStyles.link}>
-          <Typography variant="h6" gutterBottom>
-            Your short URL:
-          </Typography>
           <a
             href={`/${collectionUrl}`}
             target="_blank"
@@ -90,10 +142,12 @@ const CreateCollection: React.FC = () => {
           >
             {collectionUrl}
           </a>
+          <IconButton onClick={handleCopy} sx={{ ml: 1 }}>
+            <ContentCopyIcon />
+          </IconButton>
         </Box>
       )}
 
-      {/* Error Snackbar */}
       <Snackbar
         open={!!error}
         autoHideDuration={6000}

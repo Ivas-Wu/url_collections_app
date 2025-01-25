@@ -1,54 +1,85 @@
 export const textboxStyles = {
   paper: {
     padding: 3,
-    maxWidth: 500,
-    margin: 'auto',
-    marginTop: 4,
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+    margin: '3em',
+    backgroundColor: 'secondary.light', //'#FCFCFC',
+    borderRadius: '16px',
+    boxShadow: '0px 8px 12px rgba(0, 0, 0, 0.1)',
+    minWidth: 300,
+    "@media (min-width: 0px)": {
+      width: '90%',
+    },
+    "@media (min-width: 600px)": {
+      width: '75%',
+    },
+    "@media (min-width: 1200px)": {
+      width: '40%',
+    },
+    "@media (min-width: 2400px)": {
+      width: '25%',
+    },
   },
-  title: {
-    fontFamily: 'Roboto, sans-serif',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 2,
-    textAlign: 'center',
-  },
+
   textField: {
     marginBottom: 2,
   },
   button: {
+    backgroundColor: 'secondary.main',
+    color: 'secondary.dark',
+    fontWeight: '400',
+    fontSize: '1.15rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3f51b5',
-    color: 'white',
     padding: '8px 16px',
-    fontWeight: 'bold',
     borderRadius: '4px',
     '&:hover': {
-      backgroundColor: '#303f9f',
+      backgroundColor: 'secondary.dark',
+      color: 'secondary.contrastText',
     },
   },
   link: {
-    marginTop: 2,
     textAlign: 'center',
-    fontSize: '1rem',
+    fontSize: '1.5rem',
+    paddingTop: '2em',
     a: {
-      color: '#3f51b5',
+      color: 'secondary.dark',
       textDecoration: 'none',
       '&:hover': {
         textDecoration: 'underline',
       },
+      padding: '8px 0 0 8px',
     },
   },
-  errorbox: { 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '80vh', 
-    textAlign: 'center' 
+  errorbox: {
+    display: 'flex',
+    jc: 'center',
+    ai: 'center',
+    height: '80vh',
+    textAlign: 'center'
   },
+  titleContainer: {
+    display: "flex",
+    jc: "space-between",
+    ai: "center",
+    mb: 2,
+  },
+  titleText: {
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '1.5rem',
+    fontWeight: 500,
+    color: '#secondary.dark',
+    textAlign: "left",
+    flexGrow: 1,
+  },
+  titleIcon: {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+  },
+  formBody: {
+    pt: '0.5em',
+  }
 };

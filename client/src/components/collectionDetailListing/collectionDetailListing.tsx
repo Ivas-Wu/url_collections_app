@@ -1,24 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
   IconButton,
   Menu,
   MenuItem,
   Pagination,
   Typography,
+  Box,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import type { Collection } from '../../models/collections.models';
 import { removeUrlFromCollection } from '../../services/collectionService';
-import tableStyles from '../styles/tableStyles';
 import { Url } from '../../models/url.models';
 import { AccessConstants } from '../../constant/constants';
+import tableStyles from '../styles/tableStyles';
 
 interface CollectionDetailsProps {
   collectionId: string;
@@ -36,8 +32,6 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   onError,
 }) => {
   const [collections, setCollections] = useState<Url[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
 
@@ -74,61 +68,63 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
     catch (err) {
       onError(err instanceof Error ? err.message : 'Cannot remove collection.');
     }
-
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page);
-  };
+  const columns = [
+    { field: 'altName', headerName: 'Name', width: 300 },
+    { field: 'originalUrl', headerName: 'URL', width: 200 },
+    {
+      field: 'shortUrl',
+      headerName: 'Short URL',
+      width: 200,
+      renderCell: (params: any) => (
+        <a
+          href={`/${params.value}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {params.value}
+        </a>
+      ),
+    },
+    { field: 'ownerName', headerName: 'Created By', width: 200 },
+    { field: 'createdAt', headerName: 'Created At', width: 200 },
+    { field: 'viewCount', headerName: 'View Count', width: 100 },
+    {
+      field: 'actions',
+      headerName: '',
+      width: 100,
+      renderCell: (params: any) => (
+        editAccess ? (
+          <IconButton
+            aria-label="actions"
+            onClick={(e) => handleMenuClick(e, params.row.shortUrl)}
+          >
+            <MoreVertIcon />
+          </IconButton>
+        ) : null
+      ),
+    },
+  ];
+
+  const rows = collections.map((collection) => ({
+    id: collection.shortUrl,
+    altName: collection.altName,
+    originalUrl: collection.originalUrl,
+    shortUrl: collection.shortUrl,
+    viewCount: collection.viewCount,
+    ownerName: collection.ownerName,
+    createdAt: collection.createdAt,
+  }));
 
   return (
-    <Paper sx={tableStyles.paper}>
-      <Typography sx={tableStyles.typography} variant="h4" gutterBottom>
-        Collection Details
-      </Typography>
-      <TableContainer sx={tableStyles.tableContainer}>
-        <Table>
-          <TableHead sx={tableStyles.tableHead}>
-            <TableRow>
-              <TableCell sx={tableStyles.tableCell}>Name</TableCell>
-              <TableCell sx={tableStyles.tableCell}>URL</TableCell>
-              <TableCell sx={tableStyles.tableCell}>Short URL</TableCell>
-              <TableCell sx={tableStyles.tableCell}>Created At</TableCell>
-              <TableCell sx={tableStyles.tableCell}></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {collections
-              .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-              .map((collection) => (
-                <TableRow key={collection.altName}>
-                  <TableCell>{collection.altName}</TableCell>
-                  <TableCell>{collection.originalUrl}</TableCell>
-                  <TableCell>
-                    <a
-                      href={`/${collection.shortUrl}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {collection.shortUrl}
-                    </a>
-                  </TableCell>
-                  <TableCell>{collection.createdAt}</TableCell>
-                  <TableCell>
-                    {editAccess && (
-                      <IconButton
-                        aria-label="actions"
-                        onClick={(e) => handleMenuClick(e, collection.shortUrl)}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <Paper>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+        />
+      </div>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -136,12 +132,6 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
       >
         <MenuItem onClick={() => handleDelete(selectedRowId!)}>Remove from collection</MenuItem>
       </Menu>
-      <Pagination
-        count={Math.ceil(collections.length / itemsPerPage)}
-        page={currentPage}
-        onChange={handlePageChange}
-        sx={tableStyles.pagination}
-      />
     </Paper>
   );
 };
