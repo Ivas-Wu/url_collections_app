@@ -7,21 +7,25 @@ import collectionsImage from '../assets/missingimage.jpg';
 interface navigationCardItem {
     title: string;
     path: string;
+    description: string;
 }
 
 const LandingPage: React.FC = () => {
     const navigationCard: navigationCardItem[] = [
         {
             title: "Urls",
-            path: "/url"
+            path: "/home",
+            description: "Default home page. Let's shorten a url!",
         },
         {
             title: "Collections",
-            path: "/collection"
+            path: "/collections",
+            description: "Search for a collection!",
         },
         {
-            title: "About",
-            path: "/About"
+            title: "Login",
+            path: "/login",
+            description: "Login for a more personalized experience!",
         },
     ]
     return (
@@ -62,18 +66,21 @@ const LandingPage: React.FC = () => {
                 <Container>
                     <Box sx={{
                         display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between'
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        "@media (min-width: 600px)": {
+                            flexDirection: 'row',
+                        },
                     }}>
                         {navigationCard.map((cardDetails) => (
-                            <Card sx={landingPageStyles.navigationCard}>
+                            <Card sx={landingPageStyles.navigationCard} component={Link} to={cardDetails.path}>
                                 <CardActionArea>
                                     <CardContent sx={{ height: '100%' }}>
                                         <Typography variant="h5" component="div">
                                             {cardDetails.title}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {cardDetails.path}
+                                        <Typography sx={landingPageStyles.textBody} color="text.secondary">
+                                            {cardDetails.description}
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>

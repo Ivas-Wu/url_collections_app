@@ -121,6 +121,7 @@ export const landingPageStyles = {
         width: '-webkit-fill-available',
         perspective: 1000,
         margin: '1em',
+        textDecoration: 'none',
         // height: 100,
         // "@media (min-width: 600px)": {
         //     height: 200

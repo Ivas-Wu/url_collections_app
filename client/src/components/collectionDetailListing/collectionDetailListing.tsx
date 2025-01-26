@@ -5,8 +5,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Pagination,
-  Typography,
   Box,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -14,7 +12,6 @@ import type { Collection } from '../../models/collections.models';
 import { removeUrlFromCollection } from '../../services/collectionService';
 import { Url } from '../../models/url.models';
 import { AccessConstants } from '../../constant/constants';
-import tableStyles from '../styles/tableStyles';
 
 interface CollectionDetailsProps {
   collectionId: string;
@@ -71,12 +68,11 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
   };
 
   const columns = [
-    { field: 'altName', headerName: 'Name', width: 300 },
-    { field: 'originalUrl', headerName: 'URL', width: 200 },
+    { field: 'altName', headerName: 'Name', flex: 3 },
     {
       field: 'shortUrl',
       headerName: 'Short URL',
-      width: 200,
+      flex: 1.5,
       renderCell: (params: any) => (
         <a
           href={`/${params.value}`}
@@ -87,13 +83,14 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
         </a>
       ),
     },
-    { field: 'ownerName', headerName: 'Created By', width: 200 },
-    { field: 'createdAt', headerName: 'Created At', width: 200 },
-    { field: 'viewCount', headerName: 'View Count', width: 100 },
+    { field: 'ownerName', headerName: 'Created By', flex: 1.5 },
+    { field: 'createdAt', headerName: 'Created At', flex: 1.5 },
+    { field: 'viewCount', headerName: 'View Count', flex: 1 },
+    { field: 'originalUrl', headerName: 'Original URL', flex: 1 },
     {
       field: 'actions',
       headerName: '',
-      width: 100,
+      flex: 0.5,
       renderCell: (params: any) => (
         editAccess ? (
           <IconButton
@@ -119,12 +116,28 @@ const CollectionDetailListing: React.FC<CollectionDetailsProps> = ({
 
   return (
     <Paper>
-      <div style={{ height: 400, width: '100%' }}>
+      <Box
+        sx={{
+          width: '100%',
+          marginBottom: '50px',
+          height: 300,
+          '@media (min-width: 600px)': {
+            height: 400,
+          },
+          '@media (min-width: 1200px)': {
+            height: 500,
+          },
+          '@media (min-width: 2400px)': {
+            height: 600,
+          },
+        }}
+      >
         <DataGrid
           rows={rows}
           columns={columns}
+          checkboxSelection
         />
-      </div>
+      </Box>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
