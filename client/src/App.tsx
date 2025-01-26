@@ -12,6 +12,7 @@ import { AuthProvider } from './components/auth/authContext';
 import LogoutPage from './pages/LogoutPage';
 import UserCollectionsPage from './pages/userCollectionsPage';
 import CollectionsLandingPage from './pages/collectionsLandingPage';
+import LandingPage from './pages/LandingPage';
 
 const App: React.FC = () => {
   return (
@@ -21,7 +22,8 @@ const App: React.FC = () => {
         <BrowserRouter>
           <AppLayout>
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/collections" element={<CollectionsLandingPage />} />
               <Route path="/collections/:collectionId" element={<CollectionsPage />} />
               <Route path="/collections/user" element={<UserCollectionsPage />} />

@@ -33,7 +33,7 @@ const NavBar: React.FC = () => {
       <Container sx={containerContainerStyles}>
         <Toolbar sx={toolbarStyles}>
           <Box sx={buttonContainerStyles}>
-            <Button component={Link} to="/" sx={menuButton}>
+            <Button component={Link} to="/home" sx={menuButton}>
               Home
             </Button>
             <Button component={Link} to="/collections" sx={menuButton}>
