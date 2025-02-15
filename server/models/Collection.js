@@ -14,7 +14,7 @@ const collectionMapping = new mongoose.Schema({
     visibility: {
         type: Number,
         enum: Object.values(visibilityEnum),
-        default: visibilityEnum.PUBLIC_VO
+        default: visibilityEnum.PUBLIC
     },
     accessList: { type: [String], required: false, default: [] }
 });

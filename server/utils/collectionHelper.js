@@ -57,7 +57,7 @@ const getUserAccessLevel = (collection, user) => {
     const vis = collection.visibility;
     var res = accessEnum.NONE;
 
-    if (!user && isPublic(vis)) {
+    if (isPublic(vis)) {
         if (vis === visibilityEnum.PUBLIC) {
             res = accessEnum.FULL;
         }
