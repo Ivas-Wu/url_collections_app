@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { generateHeader } from './authService';
+import { generateHeader, storeToken } from './authService';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: API_URL,
   withCredentials: true,
 });
@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
         );
         const { accessToken } = refreshResponse.data;
 
-        apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        storeToken(accessToken);
         error.config.headers['Authorization'] = `Bearer ${accessToken}`;
 
         return apiClient(error.config);

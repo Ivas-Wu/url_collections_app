@@ -59,7 +59,7 @@ const generateTokens = (userId, userRole) => {
 };
 
 const refreshAccessToken = async (req, res) => {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.status(401).json({ error: "Unauthorized" });
 
     try {
@@ -67,7 +67,7 @@ const refreshAccessToken = async (req, res) => {
 
         const newAccessToken = jwt.sign(
             { userId: decoded.userId },
-            process.env.ACCESS_TOKEN_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
 

@@ -6,7 +6,7 @@
       "name": "Launch Server",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/server/server.js",   // Path to your server file
+      "program": "${workspaceFolder}/server.js",   // Path to your server file
       "skipFiles": ["<node_internals>/**"],         // Skip internal Node.js files
       "env": {                                      // Optional: set environment variables
         "NODE_ENV": "development"

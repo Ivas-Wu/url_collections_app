@@ -34,7 +34,7 @@ export const userLogin = async (email: string, password: string) => {
     }
 
     const data = response.data;
-    localStorage.setItem('accessToken', data.accessToken);
+    storeToken(data.accessToken);
     window.location.href = '/';
     return data;
   } catch (err) {
@@ -49,11 +49,24 @@ export const userLogout = () => {
 };
 
 export const generateHeader = async () => {
-  const token = localStorage.getItem('accessToken');
-
   const headers: any = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  
+  const defaultAuth = apiClient.defaults.headers.common['Authorization'];
+  
+  if (defaultAuth) {
+    headers['Authorization'] = defaultAuth;
+  } else {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
   }
+  
   return headers;
 }
+
+export const storeToken = (accessToken: string) => {
+  localStorage.setItem('accessToken', accessToken);
+  apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+};

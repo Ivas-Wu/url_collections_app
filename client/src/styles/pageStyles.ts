@@ -7,14 +7,16 @@ export const pageStyles = {
     backgroundRepeat: "repeat",
     pt: 3,
     pb: 6,
+    px: 2,
   },
   container: {
     display: 'flex',
     flexDirection: 'column',
     gap: 3,
     height: '100%',
-    maxWidth: '95% !important',
+    maxWidth: '1200px !important',
     margin: '0 auto',
+    px: 2,
   },
   workspaceCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
