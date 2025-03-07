@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Paper, Snackbar, Alert } from '@mui/material';
-import { textboxStyles } from '../styles/textboxStyles';
+import { TextField, Button, Box, Typography, Snackbar, Alert } from '@mui/material';
+import { textboxStyles } from '../../styles';
 import { findCollection } from '../../services/collectionService';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -34,10 +34,10 @@ const CollectionSearchComponent: React.FC = () => {
   }
 
   return (
-    <Paper sx={textboxStyles.paper}>
+    <Box>
       <Box sx={textboxStyles.titleContainer}>
         <Typography sx={textboxStyles.titleText}>
-          Search Page
+          Search Collections
         </Typography>
         <Box
           component="button"
@@ -56,17 +56,6 @@ const CollectionSearchComponent: React.FC = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={textboxStyles.textField}
         />
-        {/* {showAdditionalSettings && (
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Search by collection name or url tag"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            sx={textboxStyles.textField}
-          />
-        )} */}
         <Button
           sx={textboxStyles.button}
           variant="contained"
@@ -88,7 +77,7 @@ const CollectionSearchComponent: React.FC = () => {
           </Alert>
         </Snackbar>
       )}
-    </Paper>
+    </Box>
   );
 };
 

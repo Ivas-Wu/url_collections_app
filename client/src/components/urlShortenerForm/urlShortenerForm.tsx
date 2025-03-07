@@ -14,10 +14,11 @@ import {
   Box,
   IconButton,
 } from '@mui/material';
-import { textboxStyles } from '../styles/textboxStyles';
+import { textboxStyles } from '../../styles';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface UrlShortenerFormProps {
   parentComponent: string;
@@ -39,19 +40,23 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
   const [addToCollection, setAddToCollection] = useState<boolean>(false);
   const [showAdditionalSettings, setShowAdditionalSettings] = useState<boolean>(true);
 
+  const [title, setTitle] = useState<string>("");
+
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (parentComponent === PageConstants.HOME) {
       setSubmitButtonText('Shorten URL');
+      setTitle("Shorten URL")
       setShowLink(true);
     }
     if (parentComponent === PageConstants.COLLECTION) {
       setSubmitButtonText('Add to collection');
+      setTitle("Add to collection")
       setAddToCollection(true);
     }
-  }, []);
+  }, [parentComponent]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -98,10 +103,10 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
   };
 
   return (
-    <Paper sx={textboxStyles.paper}>
+    <Box>
       <Box sx={textboxStyles.titleContainer}>
         <Typography sx={textboxStyles.titleText} >
-          {parentComponent === PageConstants.HOME ? "Shorten URL" : "Add to collection"}
+          {title}
         </Typography>
         <Box
           component="button"
@@ -122,17 +127,27 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
           sx={textboxStyles.textField}
         />
 
-        {showAdditionalSettings && (
-          <TextField
-            fullWidth
-            label="Add a title"
-            value={altName}
-            onChange={(e) => setAltName(e.target.value)}
-            placeholder="Site 1"
-            disabled={loading}
-            sx={textboxStyles.textField}
-          />
-        )}
+        <AnimatePresence>
+          {showAdditionalSettings && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <TextField
+                fullWidth
+                label="Add a title"
+                value={altName}
+                onChange={(e) => setAltName(e.target.value)}
+                placeholder="Site 1"
+                disabled={loading}
+                sx={textboxStyles.textField}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <Box
           sx={{
@@ -181,7 +196,7 @@ const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({
           </IconButton>
         </Box>
       )}
-    </Paper>
+    </Box>
   );
 };
 

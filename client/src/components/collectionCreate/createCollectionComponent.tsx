@@ -7,15 +7,15 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
-  Paper,
   Typography,
   Box,
   IconButton,
 } from '@mui/material';
-import { textboxStyles } from '../styles/textboxStyles';
+import { textboxStyles } from '../../styles';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const CreateCollection: React.FC = () => {
   const [collectionName, setCollectionName] = useState<string>('');
@@ -75,7 +75,7 @@ const CreateCollection: React.FC = () => {
   };
 
   return (
-    <Paper sx={textboxStyles.paper}>
+    <Box>
       <Box sx={textboxStyles.titleContainer}>
         <Typography sx={textboxStyles.titleText}>
           Create a New Collection
@@ -100,17 +100,27 @@ const CreateCollection: React.FC = () => {
           sx={textboxStyles.textField}
         />
 
-        {/* {showAdditionalSettings && (
-          <TextField
-            fullWidth
-            label="Collection Name"
-            value={collectionName}
-            onChange={(e) => setCollectionName(e.target.value)}
-            placeholder="Enter collection name"
-            disabled={loading}
-            sx={textboxStyles.textField}
-          />
-        )} */}
+        <AnimatePresence>
+          {showAdditionalSettings && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <TextField
+                fullWidth
+                label="Placeholder"
+                value={collectionName}
+                // onChange={(e) => setCollectionName(e.target.value)}
+                placeholder="placeholder"
+                disabled={loading}
+                sx={textboxStyles.textField}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <Box
           sx={{
@@ -157,7 +167,7 @@ const CreateCollection: React.FC = () => {
           {error}
         </Alert>
       </Snackbar>
-    </Paper>
+    </Box>
   );
 };
 
