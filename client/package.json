@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/react": "^19.0.5",
-    "@types/react-dom": "^19.0.3"
+    "@types/react-dom": "^19.0.3",
+    "@types/framer-motion": "^10.18.0"
   }
 }
