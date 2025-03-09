@@ -5,7 +5,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const register = async (email: string, password: string, username: string) => {
   try {
-    const response = await apiClient.post(`${API_URL}/api/auth/register`, {
+    const response = await apiClient.post(`${API_URL}/api/register`, {
       email,
       password,
       username
@@ -24,7 +24,7 @@ export const register = async (email: string, password: string, username: string
 
 export const userLogin = async (email: string, password: string) => {
   try {
-    const response = await apiClient.post(`${API_URL}/api/auth/login`, {
+    const response = await apiClient.post(`${API_URL}/api/login`, {
       email,
       password,
     });
