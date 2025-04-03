@@ -1,7 +1,11 @@
-🔗 URL Shortener
+**URL Shortener**
+
 A simple URL shortener with collection based grouping and account based privacy settings.
 
-🚀 Features
+Give it a sec to warm up, cold server startup [@url-collections](https://url-collections-front.onrender.com)
+<br/><br/>
+
+**Features**
 
 🔗 Shorten URLs with randomly generated or custom aliases
 
@@ -12,14 +16,14 @@ A simple URL shortener with collection based grouping and account based privacy 
 ⚡ Fast API backend using Express.js & MongoDB Atlas
 
 🤖 Optional Discord bot for automatic link shortening in chats [@url-shortener-disc-bot](https://github.com/Ivas-Wu/url-shortener-disc-bot)
+<br/><br/>
 
-🛠 Tech Stack
+
+**Tech Stack**
 
 Frontend: React (TypeScript), MUI
 
 Backend: Express.js (TypeScript), MongoDB Atlas
 
 Other: Discord.js, Docker
-
-Give it a sec to warm up, cold server startup [@url-collections](https://url-collections-front.onrender.com)
 
