@@ -1,11 +1,11 @@
-**URL Shortener**
+# URL Shortener
 
 A simple URL shortener with collection based grouping and account based privacy settings.
 
 Give it a sec to warm up, cold server startup [@url-collections](https://url-collections-front.onrender.com)
 <br/><br/>
 
-**Features**
+# Features
 
 🔗 Shorten URLs with randomly generated or custom aliases
 
@@ -19,7 +19,7 @@ Give it a sec to warm up, cold server startup [@url-collections](https://url-col
 <br/><br/>
 
 
-**Tech Stack**
+# Tech Stack
 
 Frontend: React (TypeScript), MUI
 
